@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <title>To Do List</title>
+    <style>
+        body {
+  margin: 0;
+  padding: 0;
+  background-image: linear-gradient(
+      rgba(208, 92, 210, 0.5),
+      rgba(208, 92, 210, 0.5)
+    ),
+    url(https://4kwallpapers.com/images/wallpapers/scenery-lake-blue-sky-forest-reflection-scenic-clouds-3840x2160-6639.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.body{
+    padding: 5px 5px;
+}
+.container {
+    padding: 10px 10px;
+    background-color: beige;
+    border-radius: 5%;
+    width: 30vw;
+    height: 70vh;
+    display: table;
+    /* justify-content: center; */
+    text-align: center;
+}
+
+heading {
+  padding: 0;
+  margin: 0;
+}
+
+p {
+  font-size: 40px;
+  font-family: fantasy;
+  margin: 0;
+}
+
+.input{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.adder{
+    background-color: rgba(52, 41, 71, 0.331);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 40px;
+    background-size: contain;
+    width: 20vw;
+    height: 40px;
+}
+
+.adder input{
+    background: transparent;
+    border-radius: 30px;
+    width: 20vw;
+    height: 40px;
+    font-size: 15px;
+    border-color: transparent;
+    background-size: contain;
+}
+
+.adder button {
+    background-color: red;
+    font-size: 15px;
+    border-color: transparent;
+    border-radius: 20px;
+    height: 40px;
+    padding: 10px;
+    background-size: contain;
+    float: right;
+}
+
+.newDiv{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: bisque;
+    border-radius: 50px;
+    font-size: 20px;
+    margin: 5px;
+}
+
+.checkbox{
+    background-color: red;
+}
+
+.closeBtn{
+    float: right;
+    border-color: transparent;
+    background-color: transparent;
+    border-radius: 50px;
+}
+    </style>
+</head>
+
+<body>
+    <div class="body">
+        <div class="container">
+            <div class="heading">
+                <p>To Do List</p>
+            </div>
+            <div class="input">
+                <label for="input" class="adder">
+                    <input type="text" id="input">
+                    <button onclick="storeinput()">ADD</button>
+                </label>
+            </div>
+            <div class="listholder">
+                <ul>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+ 
+function storeinput() {
+  var input = document.getElementById("input").value;
+  console.log(input);
+
+  var inputlist = localStorage.getItem("item");
+  if (!inputlist) {
+    inputlist = [];
+  } else {
+    inputlist = JSON.parse(inputlist);
+  }
+
+  inputlist.push({ task: input, checked: false });
+  localStorage.setItem("item", JSON.stringify(inputlist));
+  
+  var listholder = document.querySelector(".listholder");
+  var newDiv = document.createElement("div");
+  newDiv.classList.add("newDiv");
+
+  var checkbox = document.createElement("input");
+  checkbox.classList.add("checkbox");
+  checkbox.type = "checkbox";
+  checkbox.name = "checkbox_input";
+  checkbox.value = "ABC";
+
+  checkbox.addEventListener("click", function () {
+  if(checkbox.checked == true)
+  {
+    newinputlist = JSON.parse(localStorage.getItem("item"));
+    var index = newinputlist.findIndex(item => item.task === input);
+    newinputlist[index].checked = true;
+    localStorage.setItem("item",JSON.stringify(newinputlist));
+    // item.checked = true;
+  }
+  else if(checkbox.checked == false)
+  {
+    newinputlist = JSON.parse(localStorage.getItem("item"));
+    var index = newinputlist.findIndex(item => item.task === input);
+    newinputlist[index].checked = false;
+    localStorage.setItem("item",JSON.stringify(newinputlist));
+  }
+});
+
+  var label = document.createElement("label");
+  var textNode = document.createTextNode(input);
+  label.appendChild(checkbox);
+
+  var closeBtn = document.createElement("button");
+  closeBtn.classList.add("closeBtn");
+  closeBtn.textContent = "X";
+  closeBtn.onclick = function () {
+    newDiv.remove();
+    var list = localStorage.getItem("item")
+    list = JSON.parse(list);
+    list = list.filter(item=> item.task !== input);
+    localStorage.setItem("item",JSON.stringify(list));
+  };
+
+  newDiv.appendChild(label);
+  newDiv.appendChild(textNode);
+
+  newDiv.appendChild(closeBtn);
+
+  listholder.appendChild(newDiv);
+}
+
+function retreivevalues(list) {
+  list = JSON.parse(list);
+
+  for (let task of list) {
+    var listholder = document.querySelector(".listholder");
+    let newDiv = document.createElement("div");
+    newDiv.classList.add("newDiv");
+
+    var checkbox = document.createElement("input");
+    checkbox.classList.add("checkbox");
+    checkbox.type = "checkbox";
+    checkbox.name = "checkbox_input";
+    checkbox.value = "ABC";
+    checkbox.checked = task.checked; // Set the checkbox state
+
+    // Add event listener to update checkbox state in local storage
+    checkbox.addEventListener("click", function () {
+        
+        if(task.checked == true)
+        {
+            newlist = JSON.parse(localStorage.getItem("item"));
+            var index = newlist.findIndex(item => item.task === task.task);
+            newlist[index].checked = false;
+            task.checked = false;
+            localStorage.setItem("item",JSON.stringify(newlist));
+        }
+        else
+        {
+            newlist = JSON.parse(localStorage.getItem("item"));
+            var index = newlist.findIndex(item => item.task === task.task);
+            newlist[index].checked = true;
+            task.checked = true;
+            localStorage.setItem("item",JSON.stringify(newlist));
+        }
+    //   task.checked = this.checked;
+      localStorage.setItem("item", JSON.stringify(list));
+    });
+
+    var label = document.createElement("label");
+    var textNode = document.createTextNode(task.task);
+    label.appendChild(checkbox);
+
+    var closeBtn = document.createElement("button");
+    closeBtn.classList.add("closeBtn");
+    closeBtn.textContent = "X";
+    closeBtn.onclick = function () {
+      newDiv.remove();
+      list = list.filter(item => item.task !== task.task);
+      localStorage.setItem("item", JSON.stringify(list));
+    };
+
+    newDiv.appendChild(label);
+    newDiv.appendChild(textNode);
+    newDiv.appendChild(closeBtn);
+
+    listholder.appendChild(newDiv);
+  }
+}
+
+// storeinput();
+
+retreivevalues(localStorage.getItem("item"));
+
+    </script>
+</body>
+
+</html>
